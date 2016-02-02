@@ -3,7 +3,7 @@
 from sqlalchemy import func
 import datetime
 
-from model import User, Movie
+from model import User, Movie, Rating
 from model import connect_to_db, db
 from server import app
 
@@ -80,6 +80,42 @@ def load_movies():
 def load_ratings():
     """Load ratings from u.data into database."""
 
+    print "Ratings"
+
+    # Delete all rows in table, so if we need to run this a second time,
+    # we won't be trying to add duplicate users
+    Rating.query.delete()
+
+    counter = 0
+
+    # Read u.user file and insert data
+    for row in open("seed_data/u.data"):
+
+        counter += 1
+
+        row = row.rstrip()
+        user_id, movie_id, score, timestamp = row.split("\t")
+
+        user_id = int(user_id)
+        movie_id = int(movie_id)
+        score = int(score)
+
+        rating = Rating(user_id = user_id,
+                        movie_id = movie_id,
+                        score = score)
+
+        db.session.add(rating)
+
+        # We found that the loading seemed to hang, and ran more 
+        # smoothly when we committed to end a transaction at a 
+        # regular interval.  The value for number of additions to
+        # complete before committing is a guess, and not based on 
+        # any documentation values or testing.
+        if (counter % 500) == 0:
+            db.session.commit()
+            print "commit at %d" % counter
+
+    db.session.commit()
 
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
