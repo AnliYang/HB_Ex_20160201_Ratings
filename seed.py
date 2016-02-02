@@ -49,15 +49,15 @@ def load_movies():
         imdb_url = tokens[4]
 
         title_raw = tokens[1].rstrip()
-        if title_raw[-6] != "(":
-            title = title_raw[:-6]
-        # elif max(find(title_raw, "(1"), find(title_raw, "(2")) > -1:
-            # then actually get the index to slice from
+
+        if title_raw[-6] == "(":
+            title = title_raw[:-6].rstrip()
+        elif max(title_raw.find("(1"), title_raw.find("(2")) > -1:
+            index = max(title_raw.find("(1"), title_raw.find("(2"))
+            title = title_raw[:index].rstrip()
             # stupid freaking dinosaurs, die already
-        # elif deal with unknown one
-
-
-            print movie_id, title_raw
+        else:
+            title = title_raw
         
         released_at_raw = tokens[2]
         if released_at_raw:
@@ -65,21 +65,14 @@ def load_movies():
         else:
             released_at = None
 
-        # print movie_id
-        # print type(movie_id)
-        # print title_raw
-        # print type(title_raw)
-        # print released_at
-        # print type(released_at)
-        # print imdb_url
-        # print type(imdb_url)
-        # print "*"*80
+        movie = Movie(movie_id=movie_id,
+                      imdb_url=imdb_url,
+                      title=title,
+                      released_at=released_at)
 
-        # We need to add to the session or it won't ever be stored
-        # db.session.add(user)
+        db.session.add(movie)
 
-    # Once we're done, we should commit our work
-    # db.session.commit()
+    db.session.commit()
 
     # CODE REVIEW QUESTION: why aren't we closing the file?
 
