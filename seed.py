@@ -1,10 +1,9 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
 
 from sqlalchemy import func
-from model import User
-# from model import Rating
-# from model import Movie
+import datetime
 
+from model import User, Movie
 from model import connect_to_db, db
 from server import app
 
@@ -36,6 +35,53 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
+
+    # Delete all rows in table, so if we need to run this a second time,
+    # we won't be trying to add duplicate users
+    Movie.query.delete()
+
+    # Read u.user file and insert data
+    for row in open("seed_data/u.item"):
+        row = row.rstrip()
+        tokens = row.split("|")
+
+        movie_id = int(tokens[0])
+        imdb_url = tokens[4]
+
+        title_raw = tokens[1].rstrip()
+        if title_raw[-6] != "(":
+            title = title_raw[:-6]
+        # elif max(find(title_raw, "(1"), find(title_raw, "(2")) > -1:
+            # then actually get the index to slice from
+            # stupid freaking dinosaurs, die already
+        # elif deal with unknown one
+
+
+            print movie_id, title_raw
+        
+        released_at_raw = tokens[2]
+        if released_at_raw:
+            released_at = datetime.datetime.strptime(released_at_raw, "%d-%b-%Y")
+        else:
+            released_at = None
+
+        # print movie_id
+        # print type(movie_id)
+        # print title_raw
+        # print type(title_raw)
+        # print released_at
+        # print type(released_at)
+        # print imdb_url
+        # print type(imdb_url)
+        # print "*"*80
+
+        # We need to add to the session or it won't ever be stored
+        # db.session.add(user)
+
+    # Once we're done, we should commit our work
+    # db.session.commit()
+
+    # CODE REVIEW QUESTION: why aren't we closing the file?
 
 
 def load_ratings():
