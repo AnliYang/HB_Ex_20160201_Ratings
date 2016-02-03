@@ -3,5 +3,12 @@
 
 <h1>Login</h1>
 
+<p>To log in please input your account email and password below.</p>
+
+<form action='/login-process' method='POST'>
+    <label>Email: <input type='text' name='email'></label>
+    <label>Password: <input type="password" name="password"></label>
+    <input type="submit">
+</form>
 
 {% endblock %}
