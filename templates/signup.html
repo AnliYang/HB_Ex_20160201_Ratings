@@ -3,5 +3,12 @@
 
 <h1>Signup</h1>
 
+<p>To sign up please input you desired account email and password below.</p>
+
+<form action='/signup-process' method='POST'>
+    <label>Email: <input type='text' name='email'></label>
+    <label>Password: <input type="password" name="password"></label>
+    <input type="submit">
+</form>
 
 {% endblock %}

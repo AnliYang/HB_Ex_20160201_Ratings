@@ -38,14 +38,31 @@ def signup():
 
     return render_template("signup.html")
 
-@app.route('/signup-process')
+@app.route('/signup-process', methods=['POST',])
 def process_signup():
     """Handle form submission for signup process.
     """
     # Logic for chekcing if user exists could be handled 
     # with javascript/AJAX in signup.
 
-    # flash message: signup success (possibly: or already existing user)
+    requested_email = request.form.get('email').strip()
+    requested_password = request.form.get('password')
+
+    # get a user with that name, if none vs if exists
+    existing_email = User.query.filter(User.email == requested_email).first()
+
+    if (existing_email == None) and requested_email:
+        # Add the user
+        user = User(email=requested_email,
+                    password=requested_password)
+        db.session.add(user)
+        db.session.commit()
+        
+        flash("User with email %s created. Please log in." % user.email)
+    else:
+        # return to homepage with scolding
+        flash("""Already existing user, or invalid email entry. 
+            Please log in, or retry signup.""")
 
     # question for help: re-direct or load homepage template
     return render_template("homepage.html")
