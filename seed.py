@@ -11,7 +11,7 @@ from server import app
 def load_users():
     """Load users from u.user into database."""
 
-    print "Users"
+    print "Loading Users"
 
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate users
@@ -36,6 +36,7 @@ def load_users():
 def load_movies():
     """Load movies from u.item into database."""
 
+    print "Loading Movies"
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate users
     Movie.query.delete()
@@ -80,7 +81,7 @@ def load_movies():
 def load_ratings():
     """Load ratings from u.data into database."""
 
-    print "Ratings"
+    print "Loading Ratings"
 
     # Delete all rows in table, so if we need to run this a second time,
     # we won't be trying to add duplicate users
@@ -111,7 +112,7 @@ def load_ratings():
         # regular interval.  The value for number of additions to
         # complete before committing is a guess, and not based on 
         # any documentation values or testing.
-        if (counter % 500) == 0:
+        if (counter % 2500) == 0:
             db.session.commit()
             print "commit at %d" % counter
 
