@@ -65,7 +65,7 @@ def process_signup():
             Please log in, or retry signup.""")
 
     # question for help: re-direct or load homepage template
-    return render_template("homepage.html")
+    return redirect('/')
 
 @app.route('/login')
 def login():
