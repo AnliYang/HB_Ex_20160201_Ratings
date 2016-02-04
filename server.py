@@ -49,9 +49,9 @@ def process_signup():
     requested_password = request.form.get('password')
 
     # get a user with that name, if none vs if exists
-    existing_email = User.query.filter(User.email == requested_email).first()
+    existing_user= User.query.filter(User.email == requested_email).first()
 
-    if (existing_email == None) and requested_email:
+    if (existing_user == None) and requested_email:
         # Add the user
         user = User(email=requested_email,
                     password=requested_password)
@@ -107,8 +107,13 @@ def process_logout():
     """Handle form submission for logout process."""
 
     # delete session inofrmation
+    # We provide a default so that the behavior for pop is NOT to 
+    # raise and error if no user is logged in
+    session.pop('logged_in_user_id', None)
+
     # flash message: logout successs
-    return render_template("homepage.html")
+    flash("Successful log out. Goodbye!")
+    return redirect('/')
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
