@@ -127,6 +127,17 @@ def user_lookup(user_id):
 
     return render_template('user.html', zipcode=zipcode, age=age, ratings=ratings)
 
+@app.route("/movies")
+def movie_list():
+    """Show list of movies."""
+
+    movies = Movie.query.order_by(Movie.title).all()
+    return render_template("movie_list.html", movies=movies)
+
+# @app.route('/users/<int:user_id>')
+# def user_lookup(user_id):
+#     """Display individual user information."""
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
