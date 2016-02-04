@@ -114,6 +114,19 @@ def process_logout():
     flash("Successful log out. Goodbye!")
     return redirect('/')
 
+
+@app.route('/users/<int:user_id>')
+def user_lookup(user_id):
+    """Display individual user information."""
+
+    user = User.query.get(user_id)
+    zipcode = user.zipcode
+    age = user.age
+
+    ratings = user.ratings
+
+    return render_template('user.html', zipcode=zipcode, age=age, ratings=ratings)
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension

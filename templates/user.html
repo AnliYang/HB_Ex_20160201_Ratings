@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>User's Ratings</h2>
+
+      <table>
+      {% for rating in ratings %}
+          <tr>
+            <td>{{ rating.score }}</td>
+            <td>{{ rating.movie.title }}</td>
+          </tr>
+      {% endfor %}
+      </table>
+
+{% endblock %}
