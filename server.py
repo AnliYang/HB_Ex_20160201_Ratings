@@ -73,13 +73,34 @@ def login():
 
     return render_template("login.html")
 
-@app.route('/login-process')
+@app.route('/login-process', methods=['POST',])
 def process_login():
     """Handle form submission for login process."""
 
-    # add user info to session
-    # flash message: login success (or other)
-    return render_template("homepage.html")
+    attempted_email = request.form.get('email').strip()
+    attempted_password = request.form.get('password')
+
+    # get a user with that name, if none vs if exists
+    existing_user = User.query.filter(User.email == attempted_email).first()
+
+    # FIXME this logic has a problem
+    if (existing_user == None) or not attempted_email:
+        # scold and return home, because user isnt there or they used a blank user
+        flash("Nonexistent user. Please retry log in.")
+        return redirect('/login')
+
+    elif attempted_password == existing_user.password:
+        # password is correct 
+        session['logged_in_user_id'] = existing_user.user_id
+        flash("Successful log in!")
+        return redirect('/')
+
+    else:
+        # We think this only handles the case of valid user with invalid password
+        flash("Invalid password")
+
+        return redirect('/login')
+
 
 @app.route('/logout-process')
 def process_logout():
