@@ -12,6 +12,10 @@
 <body>
   Ratings
   <hr>
+    {% if 'logged_in_user_id' in session %}
+    <p> Oh hai there logged in user. </p>
+    {% endif %}
+
   {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>

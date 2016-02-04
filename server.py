@@ -83,7 +83,6 @@ def process_login():
     # get a user with that name, if none vs if exists
     existing_user = User.query.filter(User.email == attempted_email).first()
 
-    # FIXME this logic has a problem
     if (existing_user == None) or not attempted_email:
         # scold and return home, because user isnt there or they used a blank user
         flash("Nonexistent user. Please retry log in.")
