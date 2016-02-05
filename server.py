@@ -5,6 +5,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
+import datetime
+
 from model import User, Rating, Movie, connect_to_db, db
 
 
@@ -134,9 +136,41 @@ def movie_list():
     movies = Movie.query.order_by(Movie.title).all()
     return render_template("movie_list.html", movies=movies)
 
-# @app.route('/users/<int:user_id>')
-# def user_lookup(user_id):
-#     """Display individual user information."""
+@app.route('/movies/<int:movie_id>')
+def movie_lookup(movie_id):
+    """Display individual movie information."""
+
+    movie = Movie.query.get(movie_id)
+
+    title = movie.title
+    released_at = datetime.datetime.strftime(movie.released_at, "%d-%b-%Y")
+    imdb_url = movie.imdb_url
+
+    # binned_scores = Movie.query('score', db.func.count('score')).filter(Movie.movie_id==movie_id).group_by('score').all()
+    binned_ratings = db.session.query(Rating.score, db.func.count(Rating.score)).filter(Rating.movie_id==movie_id).group_by('score').all()
+
+    score_count = {int(r): int(c) for r,c in binned_ratings}
+
+    # not all scores may have a rating, so loop through avalible 1-5 ratings adding zero if needed
+    rating_bins = range(1,6)
+    rating_counts = []
+    for rating in rating_bins:
+        rating_counts.append(score_count.get(rating, 0))
+
+    # Make percentages
+    rating_total_count = sum(rating_counts)
+    rating_percent = [int(r*100/float(rating_total_count)) for r in rating_counts]
+
+    # Create tuples for easy use in jinja
+    ratings = zip(rating_bins, rating_percent)
+
+    return render_template("movie.html",
+                            title=title,
+                            released_at=released_at,
+                            imdb_url=imdb_url,
+                            ratings=ratings,
+                            rating_total_count=rating_total_count
+                            )
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
